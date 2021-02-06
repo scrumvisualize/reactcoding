@@ -1,6 +1,6 @@
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './App.css';
+const axios = require('axios');
 
 function App() {
 
@@ -11,17 +11,25 @@ function App() {
   const [currentDiscountAmt, setDiscountAmt] = useState("")
   const [currentRecord, setCurrentRecord] = useState([]);
   const [select, setSelect] = useState("Fiction");
-  
+  const [target_currency, setTargetCurrency] = useState("AUD");
+  const [from_currency, setFromCurrency] = useState("USD");
+  const [rate, setRate] = useState(null);
+
+  const from_select = useRef(),
+    to_select = useRef(),
+    from_input = useRef(),
+    to_input = useRef();
+
   const initialValue = [
     { id: 0, value: " --- Select a Book ---" }];
 
   const [stateOptions, setStateValues] = useState(initialValue);
 
   const fictionBooks = [
-    { id: 1, value: "Friday Barns" },
-    { id: 2, value: "Harry Porter" },
+    { id: 1, value: "Friday Barnes" },
+    { id: 2, value: "Harry Potter" },
     { id: 3, value: "Hunger Games" },
-    { id: 4, value: "Truely Tan" }
+    { id: 4, value: "Truly Tan" }
   ];
 
   const dramaBooks = [
@@ -51,6 +59,21 @@ function App() {
     setDiscountAmt(discount);
   }
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await axios.get('https://api.exchangeratesapi.io/latest');
+        console.log(data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    fetchData();
+  }, []);
+
+
+
   const resetAll = () => {
     setCurrentRecord([]);
     setCurrentBook("");
@@ -61,7 +84,7 @@ function App() {
   const handleChange = event => {
     const value = event.target.value;
     setSelect(value);
-    if(value === "Fiction"){
+    if (value === "Fiction") {
       setStateValues(fictionBooks);
     } else {
       setStateValues(dramaBooks);
@@ -87,6 +110,43 @@ function App() {
     setCurrentUnits("");
     setCurrentPrice("");
     setDiscountAmt("");
+  };
+
+
+  const selectTargetCurrency = () => {
+    const from_cur = from_select.current.value;
+    const to_cur = to_select.current.value;
+    axios
+      .get("https://api.exchangeratesapi.io/latest?base=" + from_cur)
+      .then((result) => {
+        const rate = result.data.rates[to_cur];
+        setTargetCurrency(rate);
+      });
+  }
+
+  const convertRate = () => {
+    const from_cur = from_select.current.value;
+    const to_cur = to_select.current.value;
+    const from_amount = from_input.current.value;
+    console.log(from_cur);
+    axios
+      .get("https://api.exchangeratesapi.io/latest?base=" + from_cur)
+      .then((result) => {
+        const rate = result.data.rates[to_cur];
+        const converted_amount = rate * from_amount;
+        to_input.current.value = converted_amount.toFixed(2);
+      });
+  };
+
+  const setCurRate = () => {
+    const from_cur = from_select.current.value;
+    const to_cur = to_select.current.value;
+    axios
+      .get("https://api.exchangeratesapi.io/latest?base=" + from_cur)
+      .then((result) => {
+        const rate = result.data.rates[to_cur];
+        setRate(rate);
+      });
   };
   return (
     <div className="App">
@@ -122,9 +182,9 @@ function App() {
               <select className="bookoptions" defaultValue={'DEFAULT'} onChange={(event) => changeBook(event.target.value)}>
                 <option value="DEFAULT" disabled>Choose a book ...</option>
                 {
-                  stateOptions.map((localState, index) =>(
-                  <option key={localState.id}>{localState.value}</option>
-                ))
+                  stateOptions.map((localState, index) => (
+                    <option key={localState.id}>{localState.value}</option>
+                  ))
                 }
               </select>
             </div><br></br>
@@ -157,14 +217,12 @@ function App() {
           <div className="purchasedbooks">
             <h2>Transaction Record</h2>
             <table className="purchasetable result">
-              <tr>
-                <th>Item no</th>
-                <th>Books</th>
-                <th>Units</th>
-                <th>Amount (AUD)</th>
-                <th>Discount Amount (AUD)</th>
-                <th>Final Amount (AUD)</th>
-              </tr>
+              <th>Item no</th>
+              <th>Books</th>
+              <th>Units</th>
+              <th>Amount (AUD)</th>
+              <th>Discount Amount (AUD)</th>
+              <th>Final Amount (AUD)</th>
               {
                 currentRecord.map(({ book, units, price, discount, finalamount }, index) => (
                   <tr>
@@ -179,6 +237,56 @@ function App() {
               }
 
             </table>
+          </div>
+        </div>
+      </div>
+      <div className="globalCurrencyConverter">
+        <h2>Currency Converter</h2>
+        <div className="container box">
+          <label>
+            <input
+              ref={from_input}
+              name="sourceCurrency"
+              type="text"
+              placeholder="fromCurrency"
+            />
+            <select
+              ref={from_select}
+              className="fromCurrency"
+              defaultValue={"USD"}
+              onChange={setCurRate}
+            >
+              <option value="USD">USD</option>
+              <option value="AUD">AUD</option>
+              <option value="NZD">NZD</option>
+            </select>
+          </label>
+          {" --> "}
+          <label>
+            <input
+              ref={to_input}
+              name="targetCurrency"
+              type="text"
+              placeholder="toCurrency"
+            />
+            <select ref={to_select} className="toCurrency" defaultValue="AUD" onChange={setCurRate}>
+              <option value="USD">USD</option>
+              <option value="AUD">AUD</option>
+              <option value="NZD">NZD</option>
+              <option value="EUR">EUR</option>
+              <option value="INR">INR</option>
+              <option value="AED">AED</option>
+            </select>
+          </label> 
+          <div className="recordBtn">
+          {rate ? (
+              <div>
+                Rate: One {from_currency} is {rate} {target_currency}
+              </div>
+            ) : null}
+            <button name="convert" onClick={convertRate}>
+              Convert
+            </button>
           </div>
         </div>
       </div>
