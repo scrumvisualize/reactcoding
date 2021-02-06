@@ -281,7 +281,7 @@ function App() {
           <div className="recordBtn">
           {rate ? (
               <div>
-                Rate: One {from_currency} is {rate} {target_currency}
+                Rate: One {from_currency} is {rate} 
               </div>
             ) : null}
             <button name="convert" onClick={convertRate}>

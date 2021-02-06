@@ -91,6 +91,9 @@ label{
   width: 100%;
 }
 
+.discountvalue{
+  margin-top: 20px;
+}
 
 .purchasetable td, .purchasetable th {
   border: 1px solid #ddd;
