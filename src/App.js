@@ -155,7 +155,7 @@ function App() {
       </div>
       <div className="flexbox-container">
         <div className="column_1">
-          <h2>Purchase Section</h2>
+          <h2>Purchase section</h2>
           <div className="maintransaction">
             <div className="bookstype">
               <span className="category">
@@ -215,7 +215,7 @@ function App() {
         </div>
         <div className="column_2">
           <div className="purchasedbooks">
-            <h2>Transaction Record</h2>
+            <h2>Transaction record</h2>
             <table className="purchasetable result">
               <th>Item no</th>
               <th>Books</th>
