@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
+import confirm, { Button, alert } from "react-alert-confirm";
+import "react-alert-confirm/dist/index.css";
 import './App.css';
 const axios = require('axios');
+
 
 function App() {
 
@@ -14,6 +17,7 @@ function App() {
   const [target_currency, setTargetCurrency] = useState("AUD");
   const [from_currency, setFromCurrency] = useState("USD");
   const [rate, setRate] = useState(null);
+  const [apiStatus, setApiStatus] = useState([]);
 
   const from_select = useRef(),
     to_select = useRef(),
@@ -148,6 +152,21 @@ function App() {
         setRate(rate);
       });
   };
+
+  const removeRecord = (indexToRemove) => {
+    const newList = currentRecord.filter((item, index) => index !== indexToRemove);
+    setCurrentRecord(newList);
+  }
+
+  function handleClickBasic(indexToRemove) {
+    confirm({
+      title: "Confirm Delete",
+      language: "en",
+      content: <h2>Delete Record</h2>,
+      onOk: () => removeRecord(indexToRemove)
+    });
+  }
+
   return (
     <div className="App">
       <div>
@@ -232,11 +251,15 @@ function App() {
                     <td>{price}</td>
                     <td>{discount}</td>
                     <td>{finalamount}</td>
+                    <span onClick={() => handleClickBasic(index)} className="removeRecord">
+                      -
+                    </span>
                   </tr>
                 ))
               }
 
             </table>
+
           </div>
         </div>
       </div>
@@ -277,11 +300,11 @@ function App() {
               <option value="INR">INR</option>
               <option value="AED">AED</option>
             </select>
-          </label> 
+          </label>
           <div className="recordBtn">
-          {rate ? (
+            {rate ? (
               <div>
-                Rate: One {from_currency} is {rate} 
+                Rate: One {from_currency} is {rate}
               </div>
             ) : null}
             <button name="convert" onClick={convertRate}>

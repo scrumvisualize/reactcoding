@@ -128,3 +128,28 @@ h2{
 .toCurrency{
   margin: 5px;
  }
+ .apistatus{
+  width : 30%;
+ }
+ .greenhealth{
+  width: 100px;
+  height: 35px;
+  background-color:  #26aa68;
+ }
+
+ .removeRecord{
+   height: 50px;
+   width: 50px;
+   margin: 0px 5px 0px 5px;
+   border-radius: 50%;
+   background-color: #c067b1;
+ }
+
+ .removeRecord {
+  display:block;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: 1px solid red;
+  margin-top: 5px;
+}
