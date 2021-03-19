@@ -103,7 +103,8 @@ function App() {
     const recentNewRecord = {
       book: currentBook,
       units: currentUnits,
-      price: cal_total,
+      price: currentPrice,
+      amount: cal_total,
       discount: discountedAmout.toFixed(2),
       finalamount: finalAmountAfterDisount.toFixed(2)
     };
@@ -239,18 +240,20 @@ function App() {
               <th>Item no</th>
               <th>Books</th>
               <th>Units</th>
+              <th>Price</th>
               <th>Amount (AUD)</th>
               <th>Discount Amount (AUD)</th>
               <th>Final Amount (AUD)</th>
               {
-                currentRecord.map(({ book, units, price, discount, finalamount }, index) => (
+                currentRecord.map(({ book, units, price, amount, discount, finalamount }, index) => (
                   <tr>
                     <td>{index + 1}</td>
                     <td>{book}</td>
                     <td>{units}</td>
-                    <td>{price}</td>
-                    <td>{discount}</td>
-                    <td>{finalamount}</td>
+                    <td>$ {price}</td>
+                    <td>$ {amount}</td>
+                    <td>$ {discount}</td>
+                    <td>$ {finalamount}</td>
                     <span onClick={() => handleClickBasic(index)} className="removeRecord">
                       -
                     </span>
