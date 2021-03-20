@@ -176,7 +176,7 @@ function App() {
       <div className="flexbox-container">
         <div className="column_1">
           <h2>Purchase section</h2>
-          <div className="maintransaction">
+          <div id="purchasesection" className="maintransaction">
             <div className="bookstype">
               <span className="category">
                 <label>Fiction</label>
@@ -203,7 +203,7 @@ function App() {
                 <option value="DEFAULT" disabled>Choose a book ...</option>
                 {
                   stateOptions.map((localState, index) => (
-                    <option key={localState.id}>{localState.value}</option>
+                    <option value={localState.value} key={localState.id}>{localState.value}</option>
                   ))
                 }
               </select>
@@ -236,7 +236,7 @@ function App() {
         <div className="column_2">
           <div className="purchasedbooks">
             <h2>Transaction record</h2>
-            <table className="purchasetable result">
+            <table id="transactionsection" className="purchasetable result">
               <th>Item no</th>
               <th>Books</th>
               <th>Units</th>
@@ -244,6 +244,8 @@ function App() {
               <th>Amount (AUD)</th>
               <th>Discount Amount (AUD)</th>
               <th>Final Amount (AUD)</th>
+              <th></th>
+
               {
                 currentRecord.map(({ book, units, price, amount, discount, finalamount }, index) => (
                   <tr>
@@ -254,9 +256,11 @@ function App() {
                     <td>$ {amount}</td>
                     <td>$ {discount}</td>
                     <td>$ {finalamount}</td>
-                    <span onClick={() => handleClickBasic(index)} className="removeRecord">
-                      -
-                    </span>
+                    <td>
+                      <span onClick={() => handleClickBasic(index)} className="removeRecord">
+                        -
+                      </span>
+                    </td>
                   </tr>
                 ))
               }
