@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import confirm, { Button, alert } from "react-alert-confirm";
-import "react-alert-confirm/dist/index.css";
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
+import { useForm } from "react-hook-form";
 import './App.css';
 const axios = require('axios');
 
@@ -18,6 +19,8 @@ function App() {
   const [from_currency, setFromCurrency] = useState("USD");
   const [rate, setRate] = useState(null);
   const [apiStatus, setApiStatus] = useState([]);
+  const { register, handleSubmit, errors } = useForm();
+
 
   const from_select = useRef(),
     to_select = useRef(),
@@ -95,7 +98,8 @@ function App() {
     }
   };
 
-  const calculateTotal = () => {
+  const calculateTotal = data => {
+    alert(JSON.stringify(data));
     var cal_total = currentUnits * currentPrice;
     var discountPercentage = currentDiscountAmt / 100;
     var discountedAmout = cal_total * discountPercentage;
@@ -160,82 +164,137 @@ function App() {
   }
 
   function handleClickBasic(indexToRemove) {
-    confirm({
-      title: "Confirm Delete",
-      language: "en",
-      content: <h2>Delete Record</h2>,
-      onOk: () => removeRecord(indexToRemove)
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div id="deletedialog" className='custom-ui'>
+            <h1>Are you sure?</h1>
+            <p>You want to delete this record ?</p>
+            <button onClick={onClose}>No</button>
+            <button
+              onClick={() => {
+                removeRecord(indexToRemove)
+                onClose();
+              }}
+            >
+              Yes, Delete it!
+            </button>
+          </div>
+        );
+      }
     });
   }
 
+  const onSubmit = data => {
+    alert(JSON.stringify(data));
+  };
+
   return (
     <div className="App">
-      <div>
-        <h1>Book shopping</h1>
-      </div>
-      <div className="flexbox-container">
-        <div className="column_1">
-          <h2>Purchase section</h2>
-          <div id="purchasesection" className="maintransaction">
-            <div className="bookstype">
-              <span className="category">
-                <label>Fiction</label>
-                <input
-                  name="category"
-                  value="Fiction"
-                  type="radio"
-                  onChange={handleChange}
-                  checked={select === "Fiction"}
-                />
-                <label>Drama</label>
-                <input
-                  name="category"
-                  value="Drama"
-                  type="radio"
-                  onChange={handleChange}
-                  checked={select === "Drama"}
-                />
-              </span>
-            </div>
-            <div className="container">
-              <label>Select Book</label>
-              <select className="bookoptions" defaultValue={'DEFAULT'} onChange={(event) => changeBook(event.target.value)}>
-                <option value="DEFAULT" disabled>Choose a book ...</option>
-                {
-                  stateOptions.map((localState, index) => (
-                    <option value={localState.value} key={localState.id}>{localState.value}</option>
-                  ))
-                }
-              </select>
-            </div><br></br>
-            <div className="quantity">
-              <span className="units">
-                <label>Units</label>
-                <input name="units" type="text" onChange={(event) => changeUnits(event.target.value)}></input>
-              </span>
-              <span className="price">
-                <label>Price $</label>
-                <input name="price" type="text" onChange={(event) => changePrice(event.target.value)}></input>
-              </span>
-              <span className="discount">
-                <label>Discount %</label>
-                <input name="discount" type="checkbox" onChange={(event) => setChecked(!checked)} checked={checked} />
-                {
-                  checked ? (
-                    <input className="discountvalue" name="discountvalue" type="text" onChange={(event) => discountAmt(event.target.value)} placeholder="discount" />
-                  ) : (<div></div>)
-                }
-              </span>
-            </div>
-            <div className="recordBtn">
-              <button name="record" onClick={(event) => calculateTotal()}>Record</button>
-              <button name="reset" onClick={resetAll}>Reset</button>
-            </div>
-          </div>
+      <div className="datacolumn1">
+        <div>
+          <h1>Order Books</h1>
         </div>
-        <div className="column_2">
+        <form onSubmit={handleSubmit(calculateTotal)}>
+          <h3>Choose a Category:</h3>
+          <div className="bookstype">
+            <div id="radioselect1">
+              <label>Fiction</label>
+              <input
+                name="category"
+                value="Fiction"
+                type="radio"
+                onChange={handleChange}
+                checked={select === "Fiction"}
+              />
+            </div>
+            <div id="radioselect2">
+              <label>Drama</label>
+              <input
+                name="category"
+                value="Drama"
+                type="radio"
+                onChange={handleChange}
+                checked={select === "Drama"}
+              />
+            </div>
+          </div><br></br><br></br>
+          <div className="selectabook">
+            <label>Select Book</label>
+            <select className="bookoptions" defaultValue={'DEFAULT'} onChange={(event) => changeBook(event.target.value)}>
+              <option value="DEFAULT" disabled>Choose a book ...</option>
+              {
+                stateOptions.map((localState, index) => (
+                  <option value={localState.value} key={localState.id}>{localState.value}</option>
+                ))
+              }
+            </select>
+          </div>
+          <br></br>
+          <div>
+            <label htmlFor="units">Units</label>
+            <input
+              name="units"
+              required="Required"
+              onChange={(event) => changeUnits(event.target.value)}
+              placeholder="0"
+              ref={register({
+                validate: value => value > 0
+              })}
+            />
+          </div>
+          {errors.units && <p>Input is not valid</p>}
+          <div>
+            <label htmlFor="price">Price</label>
+            <input
+              name="price"
+              placeholder="0"
+              onChange={(event) => changePrice(event.target.value)}
+              ref={register({
+                required: "Price is required",
+                pattern: {
+                  value: /^[0-9\b]+$/,
+                  message: "Invalid price"
+                }
+              })}
+            />
+          </div>
+          {errors.price && <p>{errors.price.message}</p>}
+          <div>
+            <span className="discount">
+              <label>Discount %</label>
+              <input name="discount" type="checkbox" onChange={(event) => setChecked(!checked)} checked={checked} />
+              {
+                checked ? (
+                  <input className="discountvalue"
+                    name="discountvalue"
+                    type="text"
+                    onChange={(event) => discountAmt(event.target.value)} placeholder="discount"
+                    ref={register({
+                      required: "Discount is required",
+                      pattern: {
+                        value: /^[0-9\b]+$/,
+                        message: "Invalid discount amount !"
+                      }
+                    })}
+                  />
+                ) : (<div></div>)
+              }
+            </span>
+            {errors.discountvalue && <p>{errors.discountvalue.message}</p>}
+          </div>
+          <input type="submit"/>
+          <button name="reset" onClick={resetAll}>Reset</button>
+        </form>
+
+      </div>
+      <div className="datacolumn2">
+        <div>
+          <h1>Order details</h1>
+        </div>
+        <div className="column_result">
           <div className="purchasedbooks">
-            <h2>Transaction record</h2>
+            <h3>Transaction record</h3>
             <table id="transactionsection" className="purchasetable result">
               <th>Item no</th>
               <th>Books</th>
@@ -264,12 +323,11 @@ function App() {
                   </tr>
                 ))
               }
-
             </table>
-
           </div>
         </div>
       </div>
+      {/*
       <div className="globalCurrencyConverter">
         <h2>Currency Converter</h2>
         <div className="container box">
@@ -319,8 +377,10 @@ function App() {
             </button>
           </div>
         </div>
-      </div>
+      </div> 
+      */}
     </div>
+
   );
 }
 

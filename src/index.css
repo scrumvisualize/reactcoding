@@ -11,3 +11,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.custom-ui {
+  background: deepskyblue;
+  width: 500px;
+  height: 200px;
+  text-align: center;
+  color: white;
+}
+
+.custom-ui button {
+  background-color: transparent;
+  border: 1px solid white;
+  width: 150px;
+  height: 2rem;
+  margin: 1rem;
+  color: white;
+}
+
+.column_result{
+  float: right;
+}
