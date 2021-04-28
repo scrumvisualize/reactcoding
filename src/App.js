@@ -185,9 +185,6 @@ function App() {
     });
   }
 
-  const onSubmit = data => {
-    alert(JSON.stringify(data));
-  };
 
   return (
     <div className="App">
@@ -235,10 +232,10 @@ function App() {
             <label htmlFor="units">Units</label>
             <input
               name="units"
-              required="Required"
               onChange={(event) => changeUnits(event.target.value)}
               placeholder="0"
               ref={register({
+                required: "Required",
                 validate: value => value > 0
               })}
             />
@@ -273,7 +270,7 @@ function App() {
                     ref={register({
                       required: "Discount is required",
                       pattern: {
-                        value: /^[0-9\b]+$/,
+                        value: /^[1-9]\d*(\.\d+)?$/,
                         message: "Invalid discount amount !"
                       }
                     })}
@@ -283,10 +280,8 @@ function App() {
             </span>
             {errors.discountvalue && <p>{errors.discountvalue.message}</p>}
           </div>
-          <input type="submit"/>
-          <button name="reset" onClick={resetAll}>Reset</button>
+          <input name="submit" type="submit"/>
         </form>
-
       </div>
       <div className="datacolumn2">
         <div>

@@ -108,7 +108,7 @@ label{
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #4CAF50;
+  background-color: #1798e2;
   color: white;
 }
 
@@ -290,7 +290,6 @@ hr {
 }
 
 button {
-  display: block;
   appearance: none;
   margin-top: 40px;
   border: 1px solid #333;
