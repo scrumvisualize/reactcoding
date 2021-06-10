@@ -104,6 +104,7 @@ function App() {
     var discountPercentage = currentDiscountAmt / 100;
     var discountedAmout = cal_total * discountPercentage;
     var finalAmountAfterDisount = cal_total - discountedAmout;
+    
     const recentNewRecord = {
       book: currentBook,
       units: currentUnits,
@@ -235,10 +236,10 @@ function App() {
             <label htmlFor="units">Units</label>
             <input
               name="units"
-              required="Required"
               onChange={(event) => changeUnits(event.target.value)}
               placeholder="0"
               ref={register({
+                required:"Required",
                 validate: value => value > 0
               })}
             />
@@ -284,7 +285,6 @@ function App() {
             {errors.discountvalue && <p>{errors.discountvalue.message}</p>}
           </div>
           <input type="submit"/>
-          <button name="reset" onClick={resetAll}>Reset</button>
         </form>
 
       </div>
