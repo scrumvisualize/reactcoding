@@ -1,9 +1,16 @@
 pipeline {
     agent any
     stages {
-        stage('Build') { 
+
+        stage('Install Dependencies') { 
             steps {
-                sh 'npm run build'
+                sh 'npm ci'
+            }
+        }
+    
+        stage('Checkout Reactcoding') {
+            steps {
+                git branch: 'master', credentialsId: 'ENp71hP5UGEtknhAinW7dg7plfy2ug/77vcGQBJwL+Q', url: 'ssh://git@github.com:scrumvisualize/reactcoding.git'
             }
         }
 
