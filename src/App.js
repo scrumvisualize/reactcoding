@@ -98,8 +98,8 @@ function App() {
     }
   };
 
-  const calculateTotal = data => {
-    alert(JSON.stringify(data));
+  const calculateTotal = () => {
+  
     var cal_total = currentUnits * currentPrice;
     var discountPercentage = currentDiscountAmt / 100;
     var discountedAmout = cal_total * discountPercentage;
@@ -186,9 +186,6 @@ function App() {
     });
   }
 
-  const onSubmit = data => {
-    alert(JSON.stringify(data));
-  };
 
   return (
     <div className="App">
@@ -239,7 +236,7 @@ function App() {
               onChange={(event) => changeUnits(event.target.value)}
               placeholder="0"
               ref={register({
-                required:"Required",
+                required: "Required",
                 validate: value => value > 0
               })}
             />
@@ -274,7 +271,7 @@ function App() {
                     ref={register({
                       required: "Discount is required",
                       pattern: {
-                        value: /^[0-9\b]+$/,
+                        value: /^[1-9]\d*(\.\d+)?$/,
                         message: "Invalid discount amount !"
                       }
                     })}
@@ -284,9 +281,8 @@ function App() {
             </span>
             {errors.discountvalue && <p>{errors.discountvalue.message}</p>}
           </div>
-          <input type="submit"/>
+          <input name="submit" type="submit"/>
         </form>
-
       </div>
       <div className="datacolumn2">
         <div>
@@ -327,58 +323,6 @@ function App() {
           </div>
         </div>
       </div>
-      {/*
-      <div className="globalCurrencyConverter">
-        <h2>Currency Converter</h2>
-        <div className="container box">
-          <label>
-            <input
-              ref={from_input}
-              name="sourceCurrency"
-              type="text"
-              placeholder="fromCurrency"
-            />
-            <select
-              ref={from_select}
-              className="fromCurrency"
-              defaultValue={"USD"}
-              onChange={setCurRate}
-            >
-              <option value="USD">USD</option>
-              <option value="AUD">AUD</option>
-              <option value="NZD">NZD</option>
-            </select>
-          </label>
-          {" --> "}
-          <label>
-            <input
-              ref={to_input}
-              name="targetCurrency"
-              type="text"
-              placeholder="toCurrency"
-            />
-            <select ref={to_select} className="toCurrency" defaultValue="AUD" onChange={setCurRate}>
-              <option value="USD">USD</option>
-              <option value="AUD">AUD</option>
-              <option value="NZD">NZD</option>
-              <option value="EUR">EUR</option>
-              <option value="INR">INR</option>
-              <option value="AED">AED</option>
-            </select>
-          </label>
-          <div className="recordBtn">
-            {rate ? (
-              <div>
-                Rate: One {from_currency} is {rate}
-              </div>
-            ) : null}
-            <button name="convert" onClick={convertRate}>
-              Convert
-            </button>
-          </div>
-        </div>
-      </div> 
-      */}
     </div>
 
   );
