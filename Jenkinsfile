@@ -1,10 +1,4 @@
 pipeline {
-     agent {
-    // this image provides everything needed to run Cypress test
-    docker {
-      image 'cypress/base:10'
-    }
-  }
     stages {
         stage('Build') { 
             steps {
